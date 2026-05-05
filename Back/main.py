@@ -27,7 +27,7 @@ app.add_middleware(
 
 # Initialize Together AI client
 client = AsyncTogether(api_key=os.getenv("TOGETHER_API_KEY"))
-MODEL = os.getenv("TOGETHER_MODEL", "LiquidAI/LFM2-24B-A2B")
+MODEL = "LiquidAI/LFM2-24B-A2B"
 
 # InputToken Limiter Logic
 class TokenLimiter:
@@ -70,7 +70,7 @@ class TokenLimiter:
     def consume(self, tokens: int):
         self.usage_log.append((time.time(), tokens))
 
-limit_val = int(os.getenv("TOKEN_LIMIT_PER_MINUTE", 2000))
+limit_val = 7000
 limiter = TokenLimiter(limit_val)
 
 class ChatRequest(BaseModel):

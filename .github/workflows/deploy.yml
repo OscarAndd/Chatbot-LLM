@@ -59,6 +59,7 @@ jobs:
               --name backend \
               --restart unless-stopped \
               -p 8000:8000 \
+              -e TOGETHER_API_KEY=${{ secrets.TOGETHER_API_KEY }} \
               oscar202601/chat-backend:latest
 
             echo "🚀 Iniciando frontend..."
