@@ -51,8 +51,8 @@ jobs:
             docker pull oscar202601/chat-frontend:latest
 
             echo "🛑 Deteniendo contenedores actuales..."
-            docker stop chat-backend chat-frontend || true
-            docker rm chat-backend chat-frontend || true
+            docker stop backend chat-frontend || true
+            docker rm backend chat-frontend || true
 
             echo "🚀 Iniciando backend..."
             docker run -d \
