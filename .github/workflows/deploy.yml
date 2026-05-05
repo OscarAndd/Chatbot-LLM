@@ -56,7 +56,7 @@ jobs:
 
             echo "🚀 Iniciando backend..."
             docker run -d \
-              --name chat-backend \
+              --name backend \
               --restart unless-stopped \
               -p 8000:8000 \
               oscar202601/chat-backend:latest
