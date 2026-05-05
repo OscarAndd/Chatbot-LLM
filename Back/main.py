@@ -101,13 +101,8 @@ async def generate_response(prompt: str, history: List[Dict[str, str]], temperat
     Añade instrucciones de restricción al prompt y gestiona el streaming.
     """
     print(f"DEBUG: Processing prompt: {prompt[:50]}...")
-    system_message = {
-        "role": "system", 
-        "content": "Eres un asistente virtual servicial, pero muy conciso y directo. "
-                   "Responde siempre de forma breve. Si el usuario te saluda, responde con un saludo corto. "
-                   "Evita dar explicaciones innecesarias a menos que se te pida explícitamente."
-    }
-    messages = [system_message] + history + [{"role": "user", "content": prompt}]
+    
+    messages = history + [{"role": "user", "content": prompt}]
     
     # Check tokens input in prompt
     full_prompt_text = " ".join([m["content"] for m in messages])
