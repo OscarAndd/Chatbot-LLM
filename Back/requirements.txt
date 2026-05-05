@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+together
+tiktoken
+markdown
+python-dotenv
+pydantic
+bleach
