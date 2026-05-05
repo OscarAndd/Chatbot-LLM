@@ -31,7 +31,7 @@ export default function MessageInput({
   apiHeaders = {},
   buildBody,
   isLoading = false,
-  placeholder = 'Escribe tu mensaje...',
+  placeholder = 'Escribe tu mensaje... para el LLM',
 }) {
   const [text, setText] = useState('')
   const [internalLoading, setInternalLoading] = useState(false)
