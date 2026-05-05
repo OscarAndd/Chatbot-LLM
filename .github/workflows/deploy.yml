@@ -23,7 +23,7 @@ jobs:
       - name: Build and push backend
         uses: docker/build-push-action@v5
         with:
-          context: ./backend
+          context: ./Back
           push: true
           tags: oscar202601/chat-backend:latest
 
@@ -45,7 +45,7 @@ jobs:
       - name: Build and push frontend
         uses: docker/build-push-action@v5
         with:
-          context: ./frontend
+          context: ./Front
           push: true
           tags: oscar202601/chat-frontend:latest
 
