@@ -82,8 +82,8 @@ class ChatRequest(BaseModel):
     message: str = Field(..., description="El mensaje actual enviado por el usuario")
     history: List[Dict[str, str]] = Field(default_factory=list, description="Historial de mensajes previos")
     temperature: float = Field(0.5, description="Nivel de creatividad del modelo (0.0 a 1.0)")
-    max_tokens: int = Field(5000, description="Límite máximo de tokens en la respuesta")
-    min_p: float = Field(0.1, description="Parámetro nucleus sampling para diversidad")
+    max_tokens: int = Field(1024, description="Límite máximo de tokens en la respuesta")
+    top_p: float = Field(0.1, description="Parámetro nucleus sampling para diversidad")
 
 def sanitize_and_format(text: str) -> str:
     """
@@ -101,7 +101,13 @@ async def generate_response(prompt: str, history: List[Dict[str, str]], temperat
     Añade instrucciones de restricción al prompt y gestiona el streaming.
     """
     print(f"DEBUG: Processing prompt: {prompt[:50]}...")
-    messages = history + [{"role": "user", "content": prompt}]
+    system_message = {
+        "role": "system", 
+        "content": "Eres un asistente virtual servicial, pero muy conciso y directo. "
+                   "Responde siempre de forma breve. Si el usuario te saluda, responde con un saludo corto. "
+                   "Evita dar explicaciones innecesarias a menos que se te pida explícitamente."
+    }
+    messages = [system_message] + history + [{"role": "user", "content": prompt}]
     
     # Check tokens input in prompt
     full_prompt_text = " ".join([m["content"] for m in messages])
