@@ -1,91 +1,113 @@
-name: Build and Deploy
+name: Test Push Manual
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  # ─────────────────────────────────────
-  # BACKEND
-  # ─────────────────────────────────────
-  build-backend:
+  test-push:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
+        run: |
+          echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Build and push backend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./Back
-          push: true
-          tags: oscar202601/chat-backend:latest
+      - name: Build and push chat-backend
+        run: |
+          docker build -t oscar202601/chat-backend:latest ./Back
+          docker push oscar202601/chat-backend:latest
 
-  # ─────────────────────────────────────
-  # FRONTEND
-  # ─────────────────────────────────────
-  build-frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+# name: Build and Deploy
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
+# on:
+#   push:
+#     branches: [ main ]
 
-      - name: Build and push frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./Front
-          push: true
-          tags: oscar202601/chat-frontend:latest
+# jobs:
+#   # ─────────────────────────────────────
+#   # BACKEND
+#   # ─────────────────────────────────────
+#   build-backend:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
 
-  # ─────────────────────────────────────
-  # DEPLOY AL VPS
-  # ─────────────────────────────────────
-  deploy:
-    needs: [build-backend, build-frontend]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to VPS
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USERNAME }}
-          password: ${{ secrets.VPS_PASSWORD }}
-          script: |
-            echo "📥 Descargando imágenes nuevas..."
-            docker pull oscar202601/chat-backend:latest
-            docker pull oscar202601/chat-frontend:latest
+#       - name: Login to Docker Hub
+#         uses: docker/login-action@v3
+#         with:
+#           username: ${{ secrets.DOCKER_USERNAME }}
+#           password: ${{ secrets.DOCKER_TOKEN }}
 
-            echo "🛑 Deteniendo contenedores actuales..."
-            docker stop chat-backend chat-frontend || true
-            docker rm chat-backend chat-frontend || true
+#       - name: Build and push backend
+#         uses: docker/build-push-action@v5
+#         with:
+#           context: ./Back
+#           push: true
+#           tags: oscar202601/chat-backend:latest
 
-            echo "🚀 Iniciando backend..."
-            docker run -d \
-              --name chat-backend \
-              --restart unless-stopped \
-              -p 8000:8000 \
-              oscar202601/chat-backend:latest
+#   # ─────────────────────────────────────
+#   # FRONTEND
+#   # ─────────────────────────────────────
+#   build-frontend:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
 
-            echo "🚀 Iniciando frontend..."
-            docker run -d \
-              --name chat-frontend \
-              --restart unless-stopped \
-              -p 3000:80 \
-              oscar202601/chat-frontend:latest
+#       - name: Login to Docker Hub
+#         uses: docker/login-action@v3
+#         with:
+#           username: ${{ secrets.DOCKER_USERNAME }}
+#           password: ${{ secrets.DOCKER_TOKEN }}
 
-            echo "🧹 Limpiando imágenes viejas..."
-            docker image prune -f
+#       - name: Build and push frontend
+#         uses: docker/build-push-action@v5
+#         with:
+#           context: ./Front
+#           push: true
+#           tags: oscar202601/chat-frontend:latest
 
-            echo "✅ Deploy completado!"
+#   # ─────────────────────────────────────
+#   # DEPLOY AL VPS
+#   # ─────────────────────────────────────
+#   deploy:
+#     needs: [build-backend, build-frontend]
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Deploy to VPS
+#         uses: appleboy/ssh-action@v1.0.0
+#         with:
+#           host: ${{ secrets.VPS_HOST }}
+#           username: ${{ secrets.VPS_USERNAME }}
+#           password: ${{ secrets.VPS_PASSWORD }}
+#           script: |
+#             echo "📥 Descargando imágenes nuevas..."
+#             docker pull oscar202601/chat-backend:latest
+#             docker pull oscar202601/chat-frontend:latest
+
+#             echo "🛑 Deteniendo contenedores actuales..."
+#             docker stop chat-backend chat-frontend || true
+#             docker rm chat-backend chat-frontend || true
+
+#             echo "🚀 Iniciando backend..."
+#             docker run -d \
+#               --name chat-backend \
+#               --restart unless-stopped \
+#               -p 8000:8000 \
+#               oscar202601/chat-backend:latest
+
+#             echo "🚀 Iniciando frontend..."
+#             docker run -d \
+#               --name chat-frontend \
+#               --restart unless-stopped \
+#               -p 3000:80 \
+#               oscar202601/chat-frontend:latest
+
+#             echo "🧹 Limpiando imágenes viejas..."
+#             docker image prune -f
+
+#             echo "✅ Deploy completado!"
