@@ -27,7 +27,7 @@ app.add_middleware(
 
 # Initialize Together AI client
 client = AsyncTogether(api_key=os.getenv("TOGETHER_API_KEY"))
-MODEL = "openai/gpt-oss-20b"
+MODEL = "google/gemma-4-31B-it"
 
 # InputToken Limiter Logic
 class TokenLimiter:
