@@ -193,7 +193,7 @@ export default function App() {
 
   const handleNewChat = () => {
     const id = Date.now()
-    const newConv = { id, title: 'Nueva conversación', time: getCurrentTime(), messages: [] }
+    const newConv = { id, title: 'Nuevo chat', time: getCurrentTime(), messages: [] }
     setConversations(prev => [newConv, ...prev])
     setActiveId(id)
   }
