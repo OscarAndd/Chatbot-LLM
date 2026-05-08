@@ -84,6 +84,12 @@ const INITIAL_CONVERSATIONS = [
   },
 ]
 
+const MODELS = [
+  { id: 'google/gemma-4-31B-it', name: 'Gemma 4 31B-it', icon: '💎' },
+  { id: 'meta-llama/Meta-Llama-3-8B-Instruct-Lite', name: 'Meta Llama 3 8B', icon: '🦙' },
+  { id: 'LiquidAI/LFM2-24B-A2B', name: 'LFM2-24B-A2B', icon: '🤖' },
+]
+
 // ─── URL de la API externa ────────────────────────────────────────────────────
 const API_URL = import.meta.env.VITE_API_URL ?? 'https://projectsplace.co/api/chat'
 
@@ -188,6 +194,7 @@ export default function App() {
   const [activeId, setActiveId] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [selectedModel, setSelectedModel] = useState(MODELS[0].id)
 
   const activeConv = conversations.find(c => c.id === activeId)
 
@@ -269,12 +276,18 @@ export default function App() {
       />
 
       <main className="flex-1 flex flex-col relative min-w-0 bg-gradient-to-b from-[#13162b] to-chat-bg">
-        {/* Mobile Header */}
-        <header className="lg:hidden flex items-center justify-between p-4 border-b border-white/5 bg-chat-sidebar/50 backdrop-blur-md sticky top-0 z-30">
-          <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-white/60 hover:text-white transition-colors">
-            <MenuIcon />
-          </button>
-          <div className="text-sm font-bold truncate max-w-[200px]">{activeConv?.title || 'ChatBot'}</div>
+        {/* Header */}
+        <header className="flex items-center justify-between p-4 border-b border-white/5 bg-chat-sidebar/20 backdrop-blur-md sticky top-0 z-30">
+          <div className="flex items-center gap-4">
+            <button onClick={() => setIsSidebarOpen(true)} className="lg:hidden p-2 text-white/60 hover:text-white transition-colors">
+              <MenuIcon />
+            </button>
+            <div>
+              <div className="text-sm font-bold truncate max-w-[300px]">{activeConv?.title || 'ChatBot'}</div>
+              <div className="text-[10px] text-white/40">Powered by {MODELS.find(m => m.id === selectedModel)?.name}</div>
+            </div>
+          </div>
+
           <button onClick={handleNewChat} className="p-2 text-indigo-400 hover:text-indigo-300 transition-colors">
             <PlusIcon />
           </button>
@@ -294,6 +307,9 @@ export default function App() {
               onResponse={handleApiResponse}
               apiUrl={API_URL}
               isLoading={isLoading}
+              selectedModel={selectedModel}
+              setSelectedModel={setSelectedModel}
+              models={MODELS}
             />
           </div>
         </div>
