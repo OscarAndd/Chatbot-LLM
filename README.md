@@ -1,6 +1,6 @@
 # 🤖 AI Chatbot Fullstack
 
-Un chatbot moderno construido con **FastAPI** en el backend y **React + Tailwind CSS** en el frontend. Utiliza la API de **Together AI** para procesamiento de lenguaje natural con soporte de streaming y control de tokens.
+Un chatbot moderno construido con **FastAPI** en el backend y **React + Tailwind CSS** en el frontend. Utiliza la API de **Together AI** para procesamiento de lenguaje natural con soporte de streaming y control de tokens. Esta aplicación se crea con asistencia de Inteligencia Artificial, lo que permitio reducir el tiempo de desarrollo en un 70%. Adicionalmente para realizar despliegue automatizado en un VPS se utiliza github Actions y para dar evitar que se suban cambios indeseados se solicita Pull Request para dar paso a la rama main.
 
 ---
 
