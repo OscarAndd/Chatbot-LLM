@@ -33,3 +33,34 @@ html, body, #root {
     border-radius: 10px;
   }
 }
+
+/* Tables Styling */
+.prose table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.prose th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.prose td {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.prose tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.prose tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}

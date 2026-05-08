@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkMath from 'remark-math'
+import remarkGfm from 'remark-gfm'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
 
@@ -77,7 +78,7 @@ function MessageBubble({ message, showAvatar }) {
         `}>
           <div className="prose prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-black/30 prose-pre:border prose-pre:border-white/10">
             <ReactMarkdown
-              remarkPlugins={[remarkMath]}
+              remarkPlugins={[remarkMath, remarkGfm]}
               rehypePlugins={[rehypeKatex]}
               components={{
                 p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
@@ -85,7 +86,18 @@ function MessageBubble({ message, showAvatar }) {
                   inline
                     ? <code className="bg-white/10 px-1 rounded text-indigo-300" {...props}>{children}</code>
                     : <code className={className} {...props}>{children}</code>
-                )
+                ),
+                table: ({ children }) => (
+                  <div className="overflow-x-auto my-4 rounded-xl border border-white/10">
+                    <table className="min-w-full divide-y divide-white/10 text-left">
+                      {children}
+                    </table>
+                  </div>
+                ),
+                thead: ({ children }) => <thead className="bg-white/5">{children}</thead>,
+                th: ({ children }) => <th className="px-4 py-3 text-xs font-bold uppercase tracking-wider text-white/60">{children}</th>,
+                td: ({ children }) => <td className="px-4 py-3 text-sm border-t border-white/5">{children}</td>,
+                tr: ({ children }) => <tr className="hover:bg-white/5 transition-colors">{children}</tr>
               }}
             >
               {message.text}

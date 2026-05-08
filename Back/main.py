@@ -27,7 +27,7 @@ app.add_middleware(
 
 # Initialize Together AI client
 client = AsyncTogether(api_key=os.getenv("TOGETHER_API_KEY"))
-MODEL = "google/gemma-4-31B-it"
+DEFAULT_MODEL = "google/gemma-4-31B-it"
 
 # InputToken Limiter Logic
 class TokenLimiter:
@@ -81,6 +81,7 @@ class ChatRequest(BaseModel):
     from pydantic import Field
     message: str = Field(..., description="El mensaje actual enviado por el usuario")
     history: List[Dict[str, str]] = Field(default_factory=list, description="Historial de mensajes previos")
+    model: str = Field(None, description="El modelo de LLM a utilizar")
     temperature: float = Field(0.5, description="Nivel de creatividad del modelo (0.0 a 1.0)")
     max_tokens: int = Field(1024, description="Límite máximo de tokens en la respuesta")
     top_p: float = Field(0.1, description="Parámetro nucleus sampling para diversidad")
@@ -95,7 +96,7 @@ def sanitize_and_format(text: str) -> str:
     # This converts markdown to HTML, which is a common way to "sanitize" and format
     return safe_html
 
-async def generate_response(prompt: str, history: List[Dict[str, str]], temperature: float, max_tokens: int, top_p: float):
+async def generate_response(prompt: str, history: List[Dict[str, str]], model: str, temperature: float, max_tokens: int, top_p: float):
     """
     Generador asíncrono que interactúa con la API de Together AI.
     Añade instrucciones de restricción al prompt y gestiona el streaming.
@@ -115,9 +116,10 @@ async def generate_response(prompt: str, history: List[Dict[str, str]], temperat
     limiter.consume(prompt_tokens)
 
     try:
-        print(f"DEBUG: Calling Together AI with model {MODEL}...")
+        selected_model = model if model else DEFAULT_MODEL
+        print(f"DEBUG: Calling Together AI with model {selected_model}...")
         response = await client.chat.completions.create(
-            model=MODEL,
+            model=selected_model,
             messages=messages,
             stream=True,
             temperature=temperature, 
@@ -159,6 +161,7 @@ async def chat_endpoint(request: Request, chat_request: ChatRequest):
         async for chunk in generate_response(
             chat_request.message, 
             chat_request.history,
+            model=chat_request.model,
             temperature=chat_request.temperature,
             max_tokens=chat_request.max_tokens,
             top_p=chat_request.top_p
@@ -181,7 +184,7 @@ async def chat_endpoint(request: Request, chat_request: ChatRequest):
 async def status():
     return {
         "status": "online",
-        "model": MODEL,
+        "default_model": DEFAULT_MODEL,
         "tokens_remaining": limiter.tokens_per_minute - sum(log[1] for log in limiter.usage_log)
     }
 
