@@ -284,7 +284,6 @@ export default function App() {
             </button>
             <div>
               <div className="text-sm font-bold truncate max-w-[300px]">{activeConv?.title || 'ChatBot'}</div>
-              <div className="text-[10px] text-white/40">Powered by {MODELS.find(m => m.id === selectedModel)?.name}</div>
             </div>
           </div>
 
